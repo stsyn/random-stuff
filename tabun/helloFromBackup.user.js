@@ -4,8 +4,12 @@
 // @description  Taking comments from backup
 // @author       stsyn
 // @match        https://tabun.everypony.ru/*
-// @connect      tabun.andreymal.org
+
 // @require      https://github.com/stsyn/derpibooruscripts/raw/master/YouBooru/libs/CreateElement.js
+// @downloadURL  https://github.com/stsyn/random-stuff/raw/master/tabun/helloFromBackup.user.js
+// @updateURL    https://github.com/stsyn/random-stuff/raw/master/tabun/helloFromBackup.user.js
+
+// @connect      tabun.andreymal.org
 // @grant        unsafeWindow
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
