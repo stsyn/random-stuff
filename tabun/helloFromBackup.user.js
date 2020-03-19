@@ -96,7 +96,6 @@
       let parentId, parentLink;
       if (parentLink = sameComment.querySelector('.goto.goto-comment-parent>a')) {
         parentId = parseInt(parentLink.href.split('#').pop().substring(7));
-        console.warn(parentId);
       }
       votes.remove('vote');
       votes.remove('ready');
