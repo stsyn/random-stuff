@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Two tabuns in one
-// @version      0.1
+// @version      0.2
 // @description  Taking comments from backup
 // @author       stsyn
 // @match        https://tabun.everypony.ru/*
@@ -38,9 +38,39 @@
         ]),
         createElement('li.comment-date', stuff.time),
         createElement('li.vote.ready', { id: `vote_area_comment_${stuff.id}`, className: stuff.voteClassName }, [
-          createElement('div.vote-up', { events: { click: () => unsafeWindow.vote.vote(stuff.id, unsafeWindow, 1, 'comment')}}),
+          createElement('div.vote-up', { events: { click: x => {
+            x.preventDefault();
+            unsafeWindow.ls.vote.vote(stuff.id, unsafeWindow, 1, 'comment');
+          }}}),
           createElement('span.vote-count', { id: `vote_total_comment_${stuff.id}` }, stuff.voteCount),
-          createElement('div.vote-down', { events: { click: () => unsafeWindow.vote.vote(stuff.id, unsafeWindow, -1, 'comment')}}),
+          createElement('div.vote-down', { events: { click: x => {
+            x.preventDefault();
+            unsafeWindow.ls.vote.vote(stuff.id, unsafeWindow, -1, 'comment');
+          }}}),
+        ]),
+        createElement('li.comment-favourite', [
+          createElement('div.favourite', {
+            events: { click: x => {
+              x.preventDefault();
+              unsafeWindow.ls.favourite.toggle(stuff.id, unsafeWindow, 'comment');
+            }}}, 'В избранное')
+        ]),
+        createElement('li.comment-link', [
+          createElement('a', { href: `#comment${stuff.id}`, title: 'Ссылка на комментарий' }, [
+            createElement('i.icon-synio-link')
+          ])
+        ]),
+        !stuff.parentId ? '' : createElement('li.goto.goto-comment-parent', [
+          createElement('a', {
+            href: `/comments/${stuff.parentId}`,
+            title: 'Ответ на',
+            events: { click: x => {
+              x.preventDefault();
+              unsafeWindow.ls.comments.goToParentComment(stuff.id, stuff.parentId);
+            }}}, '↑')
+        ]),
+        createElement('li.goto.goto-comment-child', [
+          createElement('a', { href: '#', title: 'Обратно к ответу' }, '↓')
         ]),
       ])
     ]
@@ -62,6 +92,14 @@
       if (item.querySelector('.vote')) return;
       const id = parseInt(item.dataset.id);
       const sameComment = mirrorContent.querySelector('#comment' + id);
+      const votes = sameComment.querySelector('li.vote').classList;
+      let parentId, parentLink;
+      if (parentLink = sameComment.querySelector('.goto.goto-comment-parent>a')) {
+        parentId = parseInt(parentLink.href.split('#').pop().substring(7));
+        console.warn(parentId);
+      }
+      votes.remove('vote');
+      votes.remove('ready');
       item.classList.add('_comment-' + modClass);
       item.innerHTML = '';
       HiddenCommentTemplate({
@@ -72,6 +110,8 @@
         authorName: sameComment.querySelector('.comment-author>a:last-child').innerText,
         time: sameComment.querySelector('.comment-date>time').innerText,
         voteCount: sameComment.querySelector('.vote-count').innerText,
+        voteClassName: votes.value,
+        parentId,
       }).forEach(elem => item.appendChild(elem));
     });
   }
