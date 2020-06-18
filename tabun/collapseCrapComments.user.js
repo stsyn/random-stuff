@@ -21,6 +21,7 @@
   // замените на false, если вам не нужно принудительное отображение сегодняшних комментов (НЕ сутки)
   const alwaysShowTodaysComments = true;
 
+  // а сюда не лезь
   const now = new Date();
   const dateString = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}T`;
   const anchor = (location.hash || '').substring(1);
