@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Collapse Crap Comments
 // @description  Прячет горы стародавних срачей
-// @version      0.2
+// @version      0.3
 // @author       stsyn
 // @include      /https:\/\/tabun\.everypony\..*\/blog\/.*\d+\.html.*/
 // @include      /https:\/\/tabun\.andreymal\.org\/blog\/.*\d+\.html.*/
-// @run-at       document-body
+// @run-at       document-end
 // @grant        none
 // ==/UserScript==
 
@@ -51,7 +51,7 @@
   }
 
   go(document.getElementById('comments'));
-  if (anchor) {
+  if (anchor && document.querySelector(`a[name="${anchor}"]`)) {
     document.querySelector(`a[name="${anchor}"]`).scrollIntoView();
   }
 })();
