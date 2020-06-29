@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         Collapse Crap Comments
 // @description  Прячет горы стародавних срачей
-// @version      0.3
+// @version      0.4
 // @author       stsyn
 // @include      /https:\/\/tabun\.everypony\..*\/blog\/.*\d+\.html.*/
 // @include      /https:\/\/tabun\.andreymal\.org\/blog\/.*\d+\.html.*/
+// @include      /https:\/\/tabun\.everypony\..*\/talk\/read\/\d+\/.*/
 // @run-at       document-end
 // @grant        none
 // ==/UserScript==
