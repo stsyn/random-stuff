@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Two tabuns in one
-// @version      0.2
+// @version      0.3
 // @description  Taking comments from backup
 // @author       stsyn
 // @match        https://tabun.everypony.ru/*
@@ -9,8 +9,12 @@
 // @downloadURL  https://github.com/stsyn/random-stuff/raw/master/tabun/helloFromBackup.user.js
 // @updateURL    https://github.com/stsyn/random-stuff/raw/master/tabun/helloFromBackup.user.js
 
+// @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
+
 // @connect      tabun.andreymal.org
 // @grant        unsafeWindow
+
+// @grant        GM.xmlhttpRequest
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
@@ -77,7 +81,7 @@
   }
 
   function getPostFromMirror() {
-    GM_xmlhttpRequest({
+    GM.xmlHttpRequest({
       method: 'GET',
       url: mirror + urlPath,
       onload: response => {
