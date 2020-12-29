@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Two tabuns in one
-// @version      0.3
+// @version      0.4
 // @description  Taking comments from backup
 // @author       stsyn
 // @match        https://tabun.everypony.ru/*
@@ -107,7 +107,10 @@
       item.innerHTML = '';
       HiddenCommentTemplate({
         id,
-        content: Array.from(sameComment.querySelector('.text').children),
+        content: Array.from(sameComment.querySelector('.text').childNodes).map(node => {
+          if (node.nodeType === 3) return node.textContent;
+          return node;
+        }),
         authorAvatar: sameComment.querySelector('.comment-avatar').src,
         authorLink: sameComment.querySelector('.comment-author>a').href,
         authorName: sameComment.querySelector('.comment-author>a:last-child').innerText,
