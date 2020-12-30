@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Two tabuns in one
-// @version      0.4
+// @version      0.5
 // @description  Taking comments from backup
 // @author       stsyn
 // @match        https://tabun.everypony.ru/*
@@ -14,7 +14,7 @@
 // @connect      tabun.andreymal.org
 // @grant        unsafeWindow
 
-// @grant        GM.xmlhttpRequest
+// @grant        GM.xmlHttpRequest
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
