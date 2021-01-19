@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Two tabuns in one
-// @version      0.5
+// @version      0.6
 // @description  Taking comments from backup
 // @author       stsyn
 // @match        https://tabun.everypony.ru/*
