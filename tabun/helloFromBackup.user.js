@@ -92,7 +92,7 @@
   }
 
   function processComments() {
-    Array.from(document.querySelectorAll(`.comment-bad:not(._comment-${modClass})`)).forEach(item => {
+    Array.from(document.querySelectorAll(`.comment-bad:not(._comment-${modClass}), .comment-deleted:not(._comment-${modClass})`)).forEach(item => {
       if (item.querySelector('.vote')) return;
       const id = parseInt(item.dataset.id);
       const sameComment = mirrorContent.querySelector('#comment' + id);
