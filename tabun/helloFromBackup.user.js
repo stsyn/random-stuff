@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Two tabuns in one
-// @version      0.6
+// @version      0.7
 // @description  Taking comments from backup
 // @author       stsyn
 // @match        https://tabun.everypony.ru/*
@@ -29,53 +29,53 @@
   function HiddenCommentTemplate(stuff) {
     return [
       createElement('a', { name: `comment${stuff.id}` }),
-      createElement('div.folding', { dataset: { id: stuff.id } }),
       createElement('div.comment-content', { id: `comment_content_id_${stuff.id}` }, [
         createElement('div.text.current', stuff.content)
       ]),
-      createElement('ul.comment-info', [
-        createElement('li.comment-author', [
-          createElement('a', { href: stuff.authorLink }, [
-            createElement('img.comment-avatar', { src: stuff.authorAvatar }),
-            stuff.authorName || ''
-          ])
+      createElement('div.comment-info', { dataset: { id: stuff.id } },
+      [
+        createElement('a', { href: stuff.authorLink }, [
+          createElement('img.comment-avatar', { src: stuff.authorAvatar }),
         ]),
-        createElement('li.comment-date', stuff.time),
-        createElement('li.vote.ready', { id: `vote_area_comment_${stuff.id}`, className: stuff.voteClassName }, [
-          createElement('div.vote-up', { events: { click: x => {
+        createElement('a.comment-author', { href: stuff.authorLink, dataset: { /* user_id: we don't know it, does this matter? */ } }, [
+          stuff.authorName || ''
+        ]),
+        createElement('time.comment-date', { title: stuff.time, /* datetime: does this matter again? */ }, stuff.time),
+        createElement('a.comment-link', { href: `#comment${stuff.id}`, title: 'Ссылка на комментарий' }),
+        !stuff.parentId ? '' : createElement('a.goto.goto-comment-parent', {
+          href: `/comments/#comment${stuff.parentId}`,
+          title: 'Ответ на',
+          events: { click: x => {
+            x.preventDefault();
+            unsafeWindow.ls.comments.goToParentComment(stuff.id, stuff.parentId);
+          }}}, '↑'),
+        createElement('div.comment-favourite', [
+          createElement('div.favourite.link-dotted', { title: 'Добавится, только если уже нет в избранном',
+            events: { click: x => {
+              x.preventDefault();
+              unsafeWindow.ls.favourite.toggle(stuff.id, unsafeWindow, 'comment');
+            }}}, 'В избранное'),
+          /* We won't createElement('span.favourite-count'): we can't check favourites count using andreymal's backup */
+        ]),
+        createElement('div.vote', { id: `vote_area_comment_${stuff.id}`, className: stuff.voteClassName }, [
+          /* Seems like we don't know if we have voted or not on certain comment, colorize arrows to let us see that */
+          createElement('div.vote-item.vote-up', { style: 'opacity: .35', events: { click: x => {
             x.preventDefault();
             unsafeWindow.ls.vote.vote(stuff.id, unsafeWindow, 1, 'comment');
           }}}),
-          createElement('span.vote-count', { id: `vote_total_comment_${stuff.id}` }, stuff.voteCount),
-          createElement('div.vote-down', { events: { click: x => {
+          createElement('span.vote-count', { id: `vote_total_comment_${stuff.id}`, dataset: {
+            target_id: stuff.id, target_type: "comment", count: 69420 /* we don't know actual votes count, so assume there are more than zero */
+          }}, '≤' + stuff.voteCount), /* Vote count in deleted comments are inaccurate */
+          createElement('div.vote-item.vote-down', { style: 'opacity: .35', events: { click: x => {
             x.preventDefault();
             unsafeWindow.ls.vote.vote(stuff.id, unsafeWindow, -1, 'comment');
           }}}),
         ]),
-        createElement('li.comment-favourite', [
-          createElement('div.favourite', {
-            events: { click: x => {
-              x.preventDefault();
-              unsafeWindow.ls.favourite.toggle(stuff.id, unsafeWindow, 'comment');
-            }}}, 'В избранное')
-        ]),
-        createElement('li.comment-link', [
-          createElement('a', { href: `#comment${stuff.id}`, title: 'Ссылка на комментарий' }, [
-            createElement('i.icon-synio-link')
-          ])
-        ]),
-        !stuff.parentId ? '' : createElement('li.goto.goto-comment-parent', [
-          createElement('a', {
-            href: `/comments/${stuff.parentId}`,
-            title: 'Ответ на',
-            events: { click: x => {
-              x.preventDefault();
-              unsafeWindow.ls.comments.goToParentComment(stuff.id, stuff.parentId);
-            }}}, '↑')
-        ]),
-        createElement('li.goto.goto-comment-child', [
-          createElement('a', { href: '#', title: 'Обратно к ответу' }, '↓')
-        ]),
+        createElement('a.reply-link.link-dotted', 'Ответить'),
+        /* We won't createElement('a.link-dotted.comment-delete'), */
+        /* and also won't createElement('a.link-dotted.comment-edit-bw.edit-timeout'):
+        /* we can't check if it's possible or not, also don't allow to edit/delete downvoted cringe for historical purposes */
+        createElement('div', { style: 'color: #999' }, '(удалённый коммент)')
       ])
     ]
   }
