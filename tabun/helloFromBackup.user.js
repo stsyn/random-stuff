@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Two tabuns in one
-// @version      0.7
+// @version      0.8
 // @description  Taking comments from backup
 // @author       stsyn
 // @match        https://tabun.everypony.ru/*
@@ -29,12 +29,12 @@
   function HiddenCommentTemplate(stuff) {
     return [
       createElement('a', { name: `comment${stuff.id}` }),
-      createElement('div.comment-content', { id: `comment_content_id_${stuff.id}` }, [
+      createElement('div.comment-content', { id: `comment_content_id_${stuff.id}`, style: 'margin-bottom: 6px;' }, [
         createElement('div.text.current', stuff.content)
       ]),
       createElement('div.comment-info', { dataset: { id: stuff.id } },
       [
-        createElement('a', { href: stuff.authorLink }, [
+        createElement('a.comment-author', { href: stuff.authorLink }, [
           createElement('img.comment-avatar', { src: stuff.authorAvatar }),
         ]),
         createElement('a.comment-author', { href: stuff.authorLink, dataset: { /* user_id: we don't know it, does this matter? */ } }, [
@@ -59,19 +59,19 @@
         ]),
         createElement('div.vote', { id: `vote_area_comment_${stuff.id}`, className: stuff.voteClassName }, [
           /* Seems like we don't know if we have voted or not on certain comment, colorize arrows to let us see that */
-          createElement('div.vote-item.vote-up', { style: 'opacity: .35', events: { click: x => {
+          /*createElement('div.vote-item.vote-up', { style: 'opacity: .35', events: { click: x => {
             x.preventDefault();
             unsafeWindow.ls.vote.vote(stuff.id, unsafeWindow, 1, 'comment');
-          }}}),
+          }}}),*/
           createElement('span.vote-count', { id: `vote_total_comment_${stuff.id}`, dataset: {
             target_id: stuff.id, target_type: "comment", count: 69420 /* we don't know actual votes count, so assume there are more than zero */
           }}, '≤' + stuff.voteCount), /* Vote count in deleted comments are inaccurate */
-          createElement('div.vote-item.vote-down', { style: 'opacity: .35', events: { click: x => {
+          /*createElement('div.vote-item.vote-down', { style: 'opacity: .35', events: { click: x => {
             x.preventDefault();
             unsafeWindow.ls.vote.vote(stuff.id, unsafeWindow, -1, 'comment');
-          }}}),
+          }}}),*/
         ]),
-        createElement('a.reply-link.link-dotted', 'Ответить'),
+        /*createElement('a.reply-link.link-dotted', 'Ответить'),*/
         /* We won't createElement('a.link-dotted.comment-delete'), */
         /* and also won't createElement('a.link-dotted.comment-edit-bw.edit-timeout'):
         /* we can't check if it's possible or not, also don't allow to edit/delete downvoted cringe for historical purposes */
