@@ -1,9 +1,13 @@
 // ==UserScript==
 // @name         Two tabuns in one
-// @version      0.8
+// @version      0.9
 // @description  Taking comments from backup
 // @author       stsyn
 // @match        https://tabun.everypony.ru/*
+// @match        https://tabun.everypony.info/*
+// @match        https://tabun.everypony.online/*
+// @match        https://tabun.everypony.me/*
+// @match        https://tabun.me/*
 
 // @require      https://github.com/stsyn/derpibooruscripts/raw/master/YouBooru/libs/CreateElement.js
 // @downloadURL  https://github.com/stsyn/random-stuff/raw/master/tabun/helloFromBackup.user.js
