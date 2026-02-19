@@ -48,13 +48,7 @@
         createElement('span.comment-date', [
           createElement('time', { title: stuff.time, itemprop: "dateCreated" /* datetime: does this matter again? */ }, stuff.time),
         ]),
-        createElement('div.comment-favourite.favorite', { title: 'Добавится, только если уже нет в избранном',
-          events: { click: x => {
-            x.preventDefault();
-            unsafeWindow.ls.favourite.toggle(stuff.id, unsafeWindow, 'comment');
-          }}
-          /* We won't put favourite count here: we can't check favourites count using andreymal's backup */
-        }),
+        createElement('div.comment-favourite', { style: "margin:-8px;" }), /* It shall not work anymore, due to backed changes; but "Back to reply" icon would rely on this div */
         createElement('a.comment-link', { href: `#comment${stuff.id}`, title: 'Ссылка на комментарий' }),
         !stuff.parentId ? '' : createElement('a.goto.goto-comment-parent', {
           href: `#comment${stuff.parentId}`,
