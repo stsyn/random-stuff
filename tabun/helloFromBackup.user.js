@@ -1,9 +1,13 @@
 // ==UserScript==
 // @name         Two tabuns in one
-// @version      0.8
+// @version      0.9
 // @description  Taking comments from backup
 // @author       stsyn
 // @match        https://tabun.everypony.ru/*
+// @match        https://tabun.everypony.info/*
+// @match        https://tabun.everypony.online/*
+// @match        https://tabun.everypony.me/*
+// @match        https://tabun.me/*
 
 // @require      https://github.com/stsyn/derpibooruscripts/raw/master/YouBooru/libs/CreateElement.js
 // @downloadURL  https://github.com/stsyn/random-stuff/raw/master/tabun/helloFromBackup.user.js
@@ -28,53 +32,54 @@
 
   function HiddenCommentTemplate(stuff) {
     return [
-      createElement('a', { name: `comment${stuff.id}` }),
+      createElement('a', { id: `comment${stuff.id}` }),
       createElement('div.comment-content', { id: `comment_content_id_${stuff.id}`, style: 'margin-bottom: 6px;' }, [
         createElement('div.text.current', stuff.content)
       ]),
-      createElement('div.comment-info', { dataset: { id: stuff.id } },
-      [
-        createElement('a.comment-author', { href: stuff.authorLink }, [
-          createElement('img.comment-avatar', { src: stuff.authorAvatar }),
+      createElement('div.comment-info', [
+        createElement('span.user-with-avatar.size-1', [
+          createElement('a', { href: stuff.authorLink }, [
+            createElement('img.avatar', { src: stuff.authorAvatar }),
+            createElement('span.nickname', [
+              stuff.authorName || ''
+            ]),
+          ]),
         ]),
-        createElement('a.comment-author', { href: stuff.authorLink, dataset: { /* user_id: we don't know it, does this matter? */ } }, [
-          stuff.authorName || ''
+        createElement('span.comment-date', [
+          createElement('time', { title: stuff.time, itemprop: "dateCreated" /* datetime: does this matter again? */ }, stuff.time),
         ]),
-        createElement('time.comment-date', { title: stuff.time, /* datetime: does this matter again? */ }, stuff.time),
+        createElement('div.comment-favourite', { style: "margin:-8px;" }), /* It shall not work anymore, due to backed changes; but "Back to reply" icon would rely on this div */
         createElement('a.comment-link', { href: `#comment${stuff.id}`, title: 'Ссылка на комментарий' }),
         !stuff.parentId ? '' : createElement('a.goto.goto-comment-parent', {
-          href: `/comments/#comment${stuff.parentId}`,
+          href: `#comment${stuff.parentId}`,
           title: 'Ответ на',
           events: { click: x => {
             x.preventDefault();
             unsafeWindow.ls.comments.goToParentComment(stuff.id, stuff.parentId);
-          }}}, '↑'),
-        createElement('div.comment-favourite', [
-          createElement('div.favourite.link-dotted', { title: 'Добавится, только если уже нет в избранном',
-            events: { click: x => {
-              x.preventDefault();
-              unsafeWindow.ls.favourite.toggle(stuff.id, unsafeWindow, 'comment');
-            }}}, 'В избранное'),
-          /* We won't createElement('span.favourite-count'): we can't check favourites count using andreymal's backup */
+          }}}, '↑'
+        ),
+        createElement('div.comment-actions', [
+          /*createElement('a.reply-link.link-dotted.active', 'Ответить'),*/
+          /* We won't createElement('a.link-dotted.comment-delete'), */
+          /* and also won't createElement('a.link-dotted.comment-edit-bw.edit-timeout'):
+          /* we can't check if it's possible or not, also don't allow to edit/delete downvoted cringe for historical purposes */
+          createElement('div.vote-wrapper', [
+            createElement('div.vote', { id: `vote_area_comment_${stuff.id}`, className: stuff.voteClassName }, [
+              /* Seems like we don't know if we have voted or not on certain comment, colorize arrows to let us see that */
+              /*createElement('div.vote-item.vote-up', { style: 'opacity: .35', events: { click: x => {
+                x.preventDefault();
+                unsafeWindow.ls.vote.vote(stuff.id, unsafeWindow, 1, 'comment');
+              }}}),*/
+              createElement('span.vote-count', { id: `vote_total_comment_${stuff.id}`, dataset: {
+                target_id: stuff.id, target_type: "comment", count: 69420 /* we don't know actual votes count, so assume there are more than zero */
+              }}, '≤' + stuff.voteCount) /* Vote count in deleted comments are inaccurate */
+              /*createElement('div.vote-item.vote-down', { style: 'opacity: .35', events: { click: x => {
+                x.preventDefault();
+                unsafeWindow.ls.vote.vote(stuff.id, unsafeWindow, -1, 'comment');
+              }}}),*/
+            ]),
+          ]),
         ]),
-        createElement('div.vote', { id: `vote_area_comment_${stuff.id}`, className: stuff.voteClassName }, [
-          /* Seems like we don't know if we have voted or not on certain comment, colorize arrows to let us see that */
-          /*createElement('div.vote-item.vote-up', { style: 'opacity: .35', events: { click: x => {
-            x.preventDefault();
-            unsafeWindow.ls.vote.vote(stuff.id, unsafeWindow, 1, 'comment');
-          }}}),*/
-          createElement('span.vote-count', { id: `vote_total_comment_${stuff.id}`, dataset: {
-            target_id: stuff.id, target_type: "comment", count: 69420 /* we don't know actual votes count, so assume there are more than zero */
-          }}, '≤' + stuff.voteCount), /* Vote count in deleted comments are inaccurate */
-          /*createElement('div.vote-item.vote-down', { style: 'opacity: .35', events: { click: x => {
-            x.preventDefault();
-            unsafeWindow.ls.vote.vote(stuff.id, unsafeWindow, -1, 'comment');
-          }}}),*/
-        ]),
-        /*createElement('a.reply-link.link-dotted', 'Ответить'),*/
-        /* We won't createElement('a.link-dotted.comment-delete'), */
-        /* and also won't createElement('a.link-dotted.comment-edit-bw.edit-timeout'):
-        /* we can't check if it's possible or not, also don't allow to edit/delete downvoted cringe for historical purposes */
         createElement('div', { style: 'color: #999' }, '(удалённый коммент)')
       ])
     ]
